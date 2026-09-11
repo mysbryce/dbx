@@ -510,12 +510,17 @@ const defaultConfigs: Record<AiProvider, Omit<AiConfig, "apiKey">> = Object.from
 ) as Record<AiProvider, Omit<AiConfig, "apiKey">>;
 
 const AI_REASONING_LEVELS: AiReasoningLevel[] = ["default", "minimal", "low", "medium", "high", "xhigh", "max"];
+const CODEX_SERVICE_TIERS = ["default", "fast"] as const;
 export const AI_OUTPUT_TOKENS_MIN = 256;
 export const AI_OUTPUT_TOKENS_MAX = 1_000_000;
 const AI_ENV_KEY_RE = /^[A-Za-z_][A-Za-z0-9_]*$/;
 
 function normalizeAiReasoningLevel(value: unknown): AiReasoningLevel {
   return typeof value === "string" && AI_REASONING_LEVELS.includes(value as AiReasoningLevel) ? (value as AiReasoningLevel) : "default";
+}
+
+function normalizeCodexServiceTier(value: unknown): AiConfig["codexServiceTier"] {
+  return typeof value === "string" && CODEX_SERVICE_TIERS.includes(value as (typeof CODEX_SERVICE_TIERS)[number]) ? (value as AiConfig["codexServiceTier"]) : undefined;
 }
 
 export function normalizeAiEnv(value: unknown): Record<string, string> {
@@ -561,6 +566,7 @@ export function normalizeAiConfig(config: Partial<AiConfig> | null | undefined):
     contextWindow: config?.contextWindow ?? undefined,
     codexCliPath: config?.codexCliPath?.trim() || undefined,
     codexCliEnv: normalizeAiEnv(config?.codexCliEnv),
+    codexServiceTier: normalizeCodexServiceTier(config?.codexServiceTier),
     claudeCodeCliPath: config?.claudeCodeCliPath?.trim() || undefined,
     claudeCodeCliEnv: normalizeAiEnv(config?.claudeCodeCliEnv),
     piAgentCliPath: config?.piAgentCliPath?.trim() || undefined,

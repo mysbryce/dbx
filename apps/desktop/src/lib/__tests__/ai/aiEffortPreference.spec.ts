@@ -33,6 +33,13 @@ describe("runtimeEffortFromPreference", () => {
   });
 });
 
+describe("Codex service tier", () => {
+  it("keeps supported values and drops invalid persisted values", () => {
+    expect(normalizeAiConfig({ provider: "codex-cli", codexServiceTier: "fast" }).codexServiceTier).toBe("fast");
+    expect(normalizeAiConfig({ provider: "codex-cli", codexServiceTier: "invalid" as "fast" }).codexServiceTier).toBeUndefined();
+  });
+});
+
 describe("effortPreferenceUpdateForCapability", () => {
   it("does not create a preference while capability data loads", () => {
     expect(effortPreferenceUpdateForCapability(enumCapability, null)).toBeUndefined();

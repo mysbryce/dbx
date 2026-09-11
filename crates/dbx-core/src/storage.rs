@@ -7876,6 +7876,7 @@ mod tests {
                 max_retries: None,
                 codex_cli_path: None,
                 codex_cli_env: std::collections::HashMap::new(),
+                codex_service_tier: None,
                 claude_code_cli_path: None,
                 claude_code_cli_env: std::collections::HashMap::new(),
                 pi_agent_cli_path: None,

@@ -1,7 +1,7 @@
 use crate::agent_events::AgentEvent;
 use crate::ai::{
-    AiCapabilitySource, AiConfig, AiEffortCapability, AiEffortSelection, AiModelInfo, AiReasoningLevel,
-    AiTestConnectionResult,
+    AiCapabilitySource, AiCodexServiceTier, AiConfig, AiEffortCapability, AiEffortSelection, AiModelInfo,
+    AiReasoningLevel, AiTestConnectionResult,
 };
 use crate::ai_cli_agent::{
     append_config_overrides, build_cli_agent_prompt, cli_command, dbx_mcp_enabled_tools, dbx_mcp_scope_env,
@@ -539,6 +539,12 @@ pub fn build_codex_exec_command(config: &AiConfig, _prompt: &str, options: &Code
     };
     if let Some(reasoning_effort) = reasoning_effort {
         config_overrides.push(format!("model_reasoning_effort={}", toml_string(&reasoning_effort)));
+    }
+    if let Some(service_tier) = config.codex_service_tier {
+        config_overrides.push(format!("service_tier={}", toml_string(service_tier.as_str())));
+        if service_tier == AiCodexServiceTier::Fast {
+            config_overrides.push("features.fast_mode=true".to_string());
+        }
     }
     append_config_overrides(&mut args, config_overrides.into_iter().chain(codex_mcp_config_overrides(options)));
 
@@ -1095,8 +1101,8 @@ mod tests {
     };
     use crate::agent_events::AgentEvent;
     use crate::ai::{
-        AiApiStyle, AiAuthMethod, AiCapabilitySource, AiConfig, AiEffortCapability, AiEffortSelection, AiInlineImage,
-        AiProvider, AiReasoningLevel,
+        AiApiStyle, AiAuthMethod, AiCapabilitySource, AiCodexServiceTier, AiConfig, AiEffortCapability,
+        AiEffortSelection, AiInlineImage, AiProvider, AiReasoningLevel,
     };
     use crate::ai_cli_agent::{model_infos, CliAgentCommandSpec};
     use serde_json::json;
@@ -1126,6 +1132,7 @@ mod tests {
             max_retries: None,
             codex_cli_path: None,
             codex_cli_env: Default::default(),
+            codex_service_tier: None,
             claude_code_cli_path: None,
             claude_code_cli_env: Default::default(),
             pi_agent_cli_path: None,
@@ -1230,6 +1237,28 @@ mod tests {
 
         assert!(!spec.args.contains(&"--reasoning-effort".to_string()));
         assert!(spec.args.contains(&"model_reasoning_effort=\"high\"".to_string()));
+    }
+
+    #[test]
+    fn builds_codex_command_with_fast_service_tier() {
+        let mut config = codex_config("default");
+        config.codex_service_tier = Some(AiCodexServiceTier::Fast);
+
+        let spec = build_codex_exec_command(&config, "hello", &run_options());
+
+        assert!(spec.args.contains(&"service_tier=\"fast\"".to_string()));
+        assert!(spec.args.contains(&"features.fast_mode=true".to_string()));
+    }
+
+    #[test]
+    fn builds_codex_command_with_standard_service_tier() {
+        let mut config = codex_config("default");
+        config.codex_service_tier = Some(AiCodexServiceTier::Default);
+
+        let spec = build_codex_exec_command(&config, "hello", &run_options());
+
+        assert!(spec.args.contains(&"service_tier=\"default\"".to_string()));
+        assert!(!spec.args.contains(&"features.fast_mode=true".to_string()));
     }
 
     #[test]

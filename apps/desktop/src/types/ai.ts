@@ -3,6 +3,7 @@ export type AiApiStyle = "completions" | "responses" | "anthropic-messages";
 export type AiAuthMethod = "api-key" | "bearer";
 export type AiEffortLevel = "low" | "medium" | "high" | "xhigh" | "max";
 export type AiReasoningLevel = "default" | "minimal" | AiEffortLevel;
+export type AiCodexServiceTier = "default" | "fast";
 export type AiCapabilitySource = "providerApi" | "localCli" | "officialRegistry" | "custom";
 export type AiAssistantMode = "ask" | "agent";
 
@@ -49,6 +50,8 @@ export interface AiConfig {
   contextWindow?: number;
   codexCliPath?: string | null;
   codexCliEnv?: Record<string, string>;
+  /** Optional Codex CLI service-tier override. Undefined inherits Codex config. */
+  codexServiceTier?: AiCodexServiceTier;
   claudeCodeCliPath?: string | null;
   claudeCodeCliEnv?: Record<string, string>;
   piAgentCliPath?: string | null;

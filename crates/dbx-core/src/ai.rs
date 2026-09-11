@@ -168,6 +168,22 @@ pub enum AiReasoningLevel {
     Max,
 }
 
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "lowercase")]
+pub enum AiCodexServiceTier {
+    Default,
+    Fast,
+}
+
+impl AiCodexServiceTier {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::Default => "default",
+            Self::Fast => "fast",
+        }
+    }
+}
+
 impl AiReasoningLevel {
     pub fn as_codex_effort(&self) -> Option<&'static str> {
         match self {
@@ -439,6 +455,8 @@ pub struct AiConfig {
     pub codex_cli_path: Option<String>,
     #[serde(default)]
     pub codex_cli_env: HashMap<String, String>,
+    #[serde(default)]
+    pub codex_service_tier: Option<AiCodexServiceTier>,
     #[serde(default)]
     pub claude_code_cli_path: Option<String>,
     #[serde(default)]
@@ -5430,6 +5448,7 @@ mod tests {
                 max_retries: None,
                 codex_cli_path: None,
                 codex_cli_env: Default::default(),
+                codex_service_tier: None,
                 claude_code_cli_path: None,
                 claude_code_cli_env: Default::default(),
                 pi_agent_cli_path: None,
@@ -6101,6 +6120,7 @@ mod tests {
             max_retries: None,
             codex_cli_path: None,
             codex_cli_env: Default::default(),
+            codex_service_tier: None,
             claude_code_cli_path: None,
             claude_code_cli_env: Default::default(),
             pi_agent_cli_path: None,
@@ -6144,6 +6164,7 @@ mod tests {
             max_retries: None,
             codex_cli_path: None,
             codex_cli_env: Default::default(),
+            codex_service_tier: None,
             claude_code_cli_path: None,
             claude_code_cli_env: Default::default(),
             pi_agent_cli_path: None,
@@ -6202,6 +6223,7 @@ mod tests {
             max_retries: None,
             codex_cli_path: None,
             codex_cli_env: Default::default(),
+            codex_service_tier: None,
             claude_code_cli_path: None,
             claude_code_cli_env: Default::default(),
             pi_agent_cli_path: None,
@@ -6243,6 +6265,7 @@ mod tests {
             max_retries: None,
             codex_cli_path: None,
             codex_cli_env: Default::default(),
+            codex_service_tier: None,
             claude_code_cli_path: None,
             claude_code_cli_env: Default::default(),
             pi_agent_cli_path: None,
@@ -6288,6 +6311,7 @@ mod tests {
             max_retries: None,
             codex_cli_path: None,
             codex_cli_env: Default::default(),
+            codex_service_tier: None,
             claude_code_cli_path: None,
             claude_code_cli_env: Default::default(),
             pi_agent_cli_path: None,
@@ -6330,6 +6354,7 @@ mod tests {
             max_retries: None,
             codex_cli_path: None,
             codex_cli_env: Default::default(),
+            codex_service_tier: None,
             claude_code_cli_path: None,
             claude_code_cli_env: Default::default(),
             pi_agent_cli_path: None,
@@ -6391,6 +6416,7 @@ mod tests {
             max_retries: None,
             codex_cli_path: None,
             codex_cli_env: Default::default(),
+            codex_service_tier: None,
             claude_code_cli_path: None,
             claude_code_cli_env: Default::default(),
             pi_agent_cli_path: None,
@@ -6428,6 +6454,7 @@ mod tests {
             max_retries: None,
             codex_cli_path: None,
             codex_cli_env: Default::default(),
+            codex_service_tier: None,
             claude_code_cli_path: None,
             claude_code_cli_env: Default::default(),
             pi_agent_cli_path: None,
@@ -6468,6 +6495,7 @@ mod tests {
             max_retries: None,
             codex_cli_path: None,
             codex_cli_env: Default::default(),
+            codex_service_tier: None,
             claude_code_cli_path: None,
             claude_code_cli_env: Default::default(),
             pi_agent_cli_path: None,
@@ -6575,6 +6603,7 @@ mod tests {
             max_retries: None,
             codex_cli_path: None,
             codex_cli_env: Default::default(),
+            codex_service_tier: None,
             claude_code_cli_path: None,
             claude_code_cli_env: Default::default(),
             pi_agent_cli_path: None,
@@ -6663,6 +6692,7 @@ mod tests {
             max_retries: None,
             codex_cli_path: None,
             codex_cli_env: Default::default(),
+            codex_service_tier: None,
             claude_code_cli_path: None,
             claude_code_cli_env: Default::default(),
             pi_agent_cli_path: None,
@@ -6778,6 +6808,7 @@ mod tests {
             max_retries: None,
             codex_cli_path: None,
             codex_cli_env: Default::default(),
+            codex_service_tier: None,
             claude_code_cli_path: None,
             claude_code_cli_env: Default::default(),
             pi_agent_cli_path: None,
@@ -6828,6 +6859,7 @@ mod tests {
             max_retries: None,
             codex_cli_path: None,
             codex_cli_env: Default::default(),
+            codex_service_tier: None,
             claude_code_cli_path: None,
             claude_code_cli_env: Default::default(),
             pi_agent_cli_path: None,
@@ -7000,6 +7032,7 @@ mod tests {
             max_retries: None,
             codex_cli_path: None,
             codex_cli_env: Default::default(),
+            codex_service_tier: None,
             claude_code_cli_path: None,
             claude_code_cli_env: Default::default(),
             pi_agent_cli_path: None,
@@ -7046,6 +7079,7 @@ mod tests {
             max_retries: None,
             codex_cli_path: None,
             codex_cli_env: Default::default(),
+            codex_service_tier: None,
             claude_code_cli_path: None,
             claude_code_cli_env: Default::default(),
             pi_agent_cli_path: None,
@@ -7140,6 +7174,7 @@ mod tests {
             max_retries: None,
             codex_cli_path: None,
             codex_cli_env: Default::default(),
+            codex_service_tier: None,
             claude_code_cli_path: None,
             claude_code_cli_env: Default::default(),
             pi_agent_cli_path: None,
@@ -7489,6 +7524,7 @@ mod tests {
             max_retries: None,
             codex_cli_path: None,
             codex_cli_env: Default::default(),
+            codex_service_tier: None,
             claude_code_cli_path: None,
             claude_code_cli_env: Default::default(),
             pi_agent_cli_path: None,
@@ -7722,6 +7758,7 @@ mod tests {
             max_retries: None,
             codex_cli_path: None,
             codex_cli_env: Default::default(),
+            codex_service_tier: None,
             claude_code_cli_path: None,
             claude_code_cli_env: Default::default(),
             pi_agent_cli_path: None,
@@ -7775,6 +7812,7 @@ mod tests {
             max_retries: None,
             codex_cli_path: None,
             codex_cli_env: Default::default(),
+            codex_service_tier: None,
             claude_code_cli_path: None,
             claude_code_cli_env: Default::default(),
             pi_agent_cli_path: None,
@@ -7831,6 +7869,7 @@ mod tests {
             max_retries: None,
             codex_cli_path: None,
             codex_cli_env: Default::default(),
+            codex_service_tier: None,
             claude_code_cli_path: None,
             claude_code_cli_env: Default::default(),
             pi_agent_cli_path: None,
@@ -7881,6 +7920,7 @@ mod tests {
             max_retries: None,
             codex_cli_path: None,
             codex_cli_env: Default::default(),
+            codex_service_tier: None,
             claude_code_cli_path: None,
             claude_code_cli_env: Default::default(),
             pi_agent_cli_path: None,
@@ -8275,6 +8315,7 @@ mod tests {
             max_retries: None,
             codex_cli_path: None,
             codex_cli_env: Default::default(),
+            codex_service_tier: None,
             claude_code_cli_path: None,
             claude_code_cli_env: Default::default(),
             pi_agent_cli_path: None,
@@ -8352,6 +8393,7 @@ mod tests {
             max_retries: None,
             codex_cli_path: None,
             codex_cli_env: Default::default(),
+            codex_service_tier: None,
             claude_code_cli_path: None,
             claude_code_cli_env: Default::default(),
             pi_agent_cli_path: None,
@@ -8424,6 +8466,7 @@ mod tests {
             max_retries: None,
             codex_cli_path: None,
             codex_cli_env: Default::default(),
+            codex_service_tier: None,
             claude_code_cli_path: None,
             claude_code_cli_env: Default::default(),
             pi_agent_cli_path: None,

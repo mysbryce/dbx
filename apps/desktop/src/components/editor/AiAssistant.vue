@@ -1009,6 +1009,17 @@ function retryActiveEffort() {
   if (config) void ensureModelEffort(config, active.modelId, true);
 }
 
+async function selectCodexServiceTier(event: Event) {
+  const active = settings.activeModel;
+  const value = (event.currentTarget as HTMLSelectElement).value;
+  if (!active || (value !== "" && value !== "default" && value !== "fast")) return;
+  try {
+    await settings.updateAiConfigItem(active.configId, { codexServiceTier: value || undefined });
+  } catch (error) {
+    toast(translateBackendError(t, error));
+  }
+}
+
 /** Deferred context compaction info; applied after stream ends to avoid shifting assistantIdx. */
 const pendingCompaction = ref<{ summary: string; compactedMessages: number } | null>(null);
 
@@ -5464,6 +5475,14 @@ async function openExternalUrl(url: string) {
                         </div>
                       </PopoverContent>
                     </Popover>
+                    <label v-if="activeFullConfig?.provider === 'codex-cli'" class="flex items-center gap-2 rounded-sm px-2 py-1.5 text-xs">
+                      <span>{{ t("ai.speed") }}</span>
+                      <select :value="activeFullConfig.codexServiceTier ?? ''" class="ml-auto max-w-[160px] rounded-sm border bg-background px-2 py-1 text-xs text-foreground outline-none focus:ring-1 focus:ring-primary" @click.stop @change="selectCodexServiceTier">
+                        <option value="">{{ t("ai.providerDefault") }}</option>
+                        <option value="default">{{ t("ai.speedStandard") }}</option>
+                        <option value="fast">{{ t("ai.speedFast") }}</option>
+                      </select>
+                    </label>
                   </div>
                 </PopoverContent>
               </Popover>
